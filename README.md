@@ -1,8 +1,11 @@
-# WebFormParser
+WebFormParser
 Parse all asp controls and user controls across all asps, ascx, master pages and list them in the order of use. 
 For each controls, all attributes(across all pages for same controls) are listed.
 The output is presented in 2 format, json format(saved to running directory) and normal console output.
-==== Console Output ======
+
+**Console OutPut**
+
+```
 -- Name :asp:label, Type: Asp, Count: 1697
   |-- Attribute:enabletheming, Count:18
   |-- Attribute:text, Count:836
@@ -30,9 +33,10 @@ The output is presented in 2 format, json format(saved to running directory) and
   |-- Attribute:itemstyle-wrap, Count:2
   |-- Attribute:headerstyle-cssclass, Count:4
   |-- Attribute:itemstyle-cssclass, Count:4
-=============================================
 
-====== Json Output====
+```
+**JSON Output**
+```
 [
  
   {
@@ -65,4 +69,4 @@ The output is presented in 2 format, json format(saved to running directory) and
       value:6
     }
   }
-  ======
+```
