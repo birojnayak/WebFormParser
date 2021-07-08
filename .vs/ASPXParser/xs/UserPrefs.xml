@@ -1,0 +1,27 @@
+﻿<Properties StartupConfiguration="{2EBB20D2-FB27-45ED-B027-CD8D1613E691}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ASPXParser/ControlsData.cs">
+    <Files>
+      <File FileName="ASPXParser/Program.cs" Line="22" Column="52" />
+      <File FileName="ASPXParser/ControlsData.cs" Line="10" Column="16" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="ASPXParser" expanded="True">
+            <Node name="ASPXParser" expanded="True">
+              <Node name="Dependencies" expanded="True" />
+              <Node name="ControlsData.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.ASPXParser PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
