@@ -1,6 +1,6 @@
 WebFormParser
-Parse all asp controls and user controls across all aspx, ascx, master pages and list them in the order of use. 
-For each controls, all attributes(across all pages for same controls) are listed.
+Parse all asp controls and user controls across all aspx, ascx, master pages and list them in the order of use. It also search the respective code behind file for events which are directly registered in codebehind and list them too.
+For each controls, all attributes(across all pages for same controls) are listed along with server side events.
 The output is presented in 2 format, json format(saved to running directory) and normal console output.
 
 **Console OutPut**
