@@ -11,8 +11,8 @@ namespace ASPXParser
         static void Main(string[] args)
         {
             Console.WriteLine("Please enter the directory of your Webform project");
-            string directoryPath = Console.ReadLine();
-            if(isValidPath(directoryPath))
+            var directoryPath = Console.ReadLine();
+            if(IsValidPath(directoryPath))
             {
                 ControlsData controls =  ReadAllNodes(directoryPath);
 
@@ -21,8 +21,8 @@ namespace ASPXParser
                 Console.WriteLine("====================================Result in Console=================================");
                 try
                 {
-                    String currentDir = System.IO.Directory.GetCurrentDirectory();
-                    String fileName = currentDir + "\\" + "controls" + Guid.NewGuid().ToString() + ".json";
+                    var currentDir = System.IO.Directory.GetCurrentDirectory();
+                    var fileName = currentDir + "\\" + "controls" + Guid.NewGuid() + ".json";
                     File.AppendAllText(fileName, controls.GetJsonResult());
                     Console.WriteLine("====================================Result in Json=================================");
                     Console.WriteLine("||     " + fileName + "   ||");
@@ -41,33 +41,35 @@ namespace ASPXParser
             Console.Read();
         }
 
-        private static ControlsData ReadAllNodes(String directoryPath)
+        private static ControlsData ReadAllNodes(string directoryPath)
         {
             try
             {
-                string[] allaspxFiles = Directory.GetFiles(directoryPath, "*.aspx", SearchOption.AllDirectories);
+                //string[] allAspxFiles = Directory.GetFiles(directoryPath, "*.aspx", SearchOption.AllDirectories);
                 var files = Directory.EnumerateFiles(directoryPath, "*.*", SearchOption.AllDirectories)
-            .Where(s => s.EndsWith(".aspx") || s.EndsWith(".ascx") || s.EndsWith(".master"));
-                ControlsData controls = new ControlsData();
-                HtmlAgilityPack.HtmlDocument htmlDoc = new HtmlAgilityPack.HtmlDocument();
+                    .Where(s => s.EndsWith(".aspx") || s.EndsWith(".ascx") || s.EndsWith(".master"));
+                var controls = new ControlsData();
+                var htmlDoc = new HtmlDocument();
                 htmlDoc.OptionFixNestedTags = true;
-                foreach (String file in allaspxFiles)
+
+                foreach (var file in files)
                 {
                     htmlDoc.Load(file);
                     var nodes = htmlDoc.DocumentNode.Descendants();
-                    foreach (HtmlNode nd in nodes)
+                    foreach (var node in nodes)
                     {
-                        List<string> attributes = new List<string>();
-                        foreach (HtmlAttribute att in nd.Attributes)
+                        var attributes = new List<string>();
+                        foreach (var att in node.Attributes)
                         {
-                            if (att.Name.Contains("runat", StringComparison.OrdinalIgnoreCase) || att.Name.Contains("id", StringComparison.OrdinalIgnoreCase))
+                            if (att.Name.Contains("runat", StringComparison.OrdinalIgnoreCase) 
+                                || att.Name.Contains("id", StringComparison.OrdinalIgnoreCase))
                             {
                                 continue;
                             }
                             attributes.Add(att.Name);
 
                         }
-                       controls.AddControl(nd.Name, attributes.ToArray());
+                        controls.AddControl(node.Name, attributes.ToArray());
                     }
                 }
                 return controls;
@@ -90,7 +92,7 @@ namespace ASPXParser
             }
         }
 
-        private static bool isValidPath(String directoryPath)
+        private static bool IsValidPath(string directoryPath)
         {
             return Directory.Exists(directoryPath);
         }

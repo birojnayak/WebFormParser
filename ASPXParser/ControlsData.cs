@@ -8,14 +8,11 @@ namespace ASPXParser
 {
     public class ControlsData
     {
-        IDictionary<String, ControlData> controlsNumbers = new Dictionary<String, ControlData>();
-        public ControlsData()
-        {
-        }
+        IDictionary<string, ControlData> controlsNumbers = new Dictionary<string, ControlData>();
 
         public bool AddControl(string controlName, string[] events)
         {
-            ControlType type = ControlType.Html;
+            ControlType type;
             if (controlName.Contains("asp:", StringComparison.OrdinalIgnoreCase))
             {
                 type = ControlType.Asp;
@@ -39,16 +36,18 @@ namespace ASPXParser
             }
             return true;
         }
-        public String GetJsonResult()
+
+        public string GetJsonResult()
         {
-            List<ControlData> allControls = controlsNumbers.Values.ToList();
-            allControls.Sort((a, b) => b.NumberOfOccurences.CompareTo(a.NumberOfOccurences));
+            var allControls = controlsNumbers.Values.ToList();
+            allControls.Sort((a, b) => b.NumberOfOccurrences.CompareTo(a.NumberOfOccurrences));
             return JsonConvert.SerializeObject(allControls);
         }
-        public override String ToString()
+
+        public override string ToString()
         {
             List<ControlData> allControls = controlsNumbers.Values.ToList();
-            allControls.Sort((a, b) => b.NumberOfOccurences.CompareTo(a.NumberOfOccurences));
+            allControls.Sort((a, b) => b.NumberOfOccurrences.CompareTo(a.NumberOfOccurrences));
             StringBuilder sb = new StringBuilder();
             foreach(ControlData control in allControls)
             {
@@ -56,6 +55,7 @@ namespace ASPXParser
             }
             return sb.ToString();
         }
+
         private class ControlData
         {
             IDictionary<string, int> attributes = new Dictionary<string, int>();
@@ -63,24 +63,28 @@ namespace ASPXParser
             {
                 ControlName = name;
                 TypeOfControl = typ;
-                NumberOfOccurences = 1;
-                addAttributes(attrs);
+                NumberOfOccurrences = 1;
+                AddAttributes(attrs);
             }
-            public String ControlName { get; set; }
-            internal ControlType TypeOfControl { get; set; }
-            public int NumberOfOccurences { get; set; }
-            public IDictionary<string, int> Attributes { get { return attributes; }}
+            public string ControlName { get; }
+
+            internal ControlType TypeOfControl { get; }
+
+            public int NumberOfOccurrences { get; set; }
+
+            public IDictionary<string, int> Attributes => attributes;
+
             public void Increase(string[] attrs)
             {
-                NumberOfOccurences += 1;
-                addAttributes(attrs);
+                NumberOfOccurrences += 1;
+                AddAttributes(attrs);
             }
 
-            private void addAttributes(string[] attrs)
+            private void AddAttributes(string[] attrs)
             {
-                foreach(string attr in attrs)
+                foreach(var attr in attrs)
                 {
-                   if(attributes.ContainsKey(attr))
+                    if(attributes.ContainsKey(attr))
                     {
                         attributes[attr] += 1;
                     }
@@ -94,9 +98,9 @@ namespace ASPXParser
             public override string ToString()
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendFormat("-- Name :{0}, Type: {1}, Count: {2}", ControlName, TypeOfControl.ToString(), NumberOfOccurences).AppendLine();
+                sb.AppendFormat("-- Name :{0}, Type: {1}, Count: {2}", ControlName, TypeOfControl.ToString(), NumberOfOccurrences).AppendLine();
                 attributes.OrderBy(v => v.Value);
-                foreach (string key in attributes.Keys)
+                foreach (var key in attributes.Keys)
                 {
                     sb.AppendFormat("  |-- Attribute:{0}, Count:{1}", key, attributes[key]).AppendLine();
                 }
