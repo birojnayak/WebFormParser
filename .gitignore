@@ -390,3 +390,4 @@ FodyWeavers.xsd
 bin
 obj
 packages
+launchSettings.json
