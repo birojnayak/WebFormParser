@@ -6,6 +6,17 @@ The output is presented in 2 format, json format(saved to running directory) and
 **Console OutPut**
 
 ```
+Solution-Level Data:
+-- Projects: 15
+-- WebFormsViewFiles: 24
+-- WebFormsCodeBehindFiles: 24
+-- UserControlFiles: 0
+-- UserControlCodeBehindFiles: 0
+-- MasterFiles: 0
+-- MasterCodeBehindFiles: 0
+-- TotalWebFormsFiles: 48
+
+Controls Data:
 -- Name :asp:label, Type: Asp, Count: 1697
   |-- Attribute:enabletheming, Count:18
   |-- Attribute:text, Count:836
@@ -37,8 +48,14 @@ The output is presented in 2 format, json format(saved to running directory) and
 ```
 **JSON Output**
 ```
+{
+    "TotalWebFormsFiles": 48,
+    "Projects": 15,
+    "WebFormsViewFiles": 24,
+    "WebFormsCodeBehindFiles": 24
+}
+
 [
- 
   {
  
     ControlName:"asp:label",
