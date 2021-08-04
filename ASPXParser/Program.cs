@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using ASPXParser.Parsers;
 
 namespace ASPXParser
 {
@@ -21,12 +22,14 @@ namespace ASPXParser
 
             if (IsValidPath(directoryPath))
             {
-                var solutionData = new SolutionData();
-                solutionData.GetData(directoryPath);
+                var solutionDataParser = new SolutionDataParser(directoryPath);
+                solutionDataParser.GetData();
+                var solutionData = solutionDataParser.SolutionData;
 
-                var controlsData = new ControlsData();
-                controlsData.GetData(solutionData.AllWebFormsFiles);
-
+                var controlsDataParser = new ControlsDataParser(solutionData.AllWebFormsFiles);
+                controlsDataParser.GetData();
+                var controlsData = controlsDataParser.ControlsData;
+                
                 Console.WriteLine("====================================Result in Console=================================");
                 Console.WriteLine(solutionData.ToString());
                 Console.WriteLine(controlsData.ToString());
