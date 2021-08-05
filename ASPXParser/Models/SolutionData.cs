@@ -11,10 +11,22 @@ namespace ASPXParser.Models
         public IEnumerable<string> AllFiles { get; set; }
 
         public IEnumerable<string> AllWebFormsFiles { get; set; }
-
+        
         public SolutionData()
         {
-            DataDictionary = new Dictionary<string, object>();
+            // DataDictionary will be written to a json file.
+            // Initializing the keys here will set the order.
+            DataDictionary = new Dictionary<string, object>
+            {
+                { "Projects", 0 },
+                { "WebFormsViewFiles", 0 },
+                { "WebFormsCodeBehindFiles", 0 },
+                { "UserControlFiles", 0 },
+                { "UserControlCodeBehindFiles", 0 },
+                { "MasterFiles", 0 },
+                { "MasterFileCodeBehindFiles", 0 },
+                { "TotalWebFormsFiles", 0 }
+            };
             AllFiles = new List<string>();
             AllWebFormsFiles = new List<string>();
         }
