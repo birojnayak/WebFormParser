@@ -14,7 +14,7 @@ namespace ASPXParser.Models
         }
 
         private IDictionary<string, int> attributes = new Dictionary<string, int>();
-        private string ControlName { get; }
+        public string ControlName { get; }
         private ControlType TypeOfControl { get; }
         public int NumberOfOccurrences { get; set; }
         public IDictionary<string, int> Attributes => attributes;
