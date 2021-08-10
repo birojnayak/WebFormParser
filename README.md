@@ -1,9 +1,14 @@
-WebFormParser
+# WebFormParser
+The WebFormParser repository contains two tools:
+* **ASPXParser**: Parses Web Forms control usage
+* **ASPXAggregator**: Aggregates multiple output files from the ASPXParser
+
+## ASPXParser
 Parses all asp controls and user controls across all aspx, ascx, master pages, and lists them in the order of use. It also searches the respective code behind files for events that are directly registered in the codebehinds and lists them too.
 For each control, all attributes (across all pages for same controls) are listed along with server side events.
 The output is presented in 2 formats, json format (saved to running directory) and normal console output.
 
-**Console OutPut**
+**Console Output**
 
 ```
 Solution-Level Data:
@@ -91,3 +96,84 @@ Controls Data:
     }
   }
 ```
+
+## ASPXAggregator
+Parses all output files from the ASPXParser project in a given directory and aggregates the total usage.
+
+The output is presented in 2 formats, json format (saved to running directory) and normal console output.
+
+
+**Example Input 1**
+```
+[
+    {
+        "ControlName": "asp:label",
+        "NumberOfOccurrences": 19,
+        "Attributes":
+        {
+            "text": 18,
+            "cssclass": 2
+        }
+    },
+    {
+        "ControlName": "asp:scriptreference",
+        "NumberOfOccurrences": 13,
+        "Attributes":
+        {
+            "name": 13
+        }
+    },
+    {
+        "ControlName": "asp:textbox",
+        "NumberOfOccurrences": 13,
+        "Attributes":
+        {
+            "cssclass": 13,
+            "text": 7,
+            "readonly": 1,
+            "tooltip": 1
+        }
+    }
+]
+```
+
+**Example Input 2**
+```
+[
+    {
+        "ControlName": "asp:label",
+        "NumberOfOccurrences": 19,
+        "Attributes":
+        {
+            "text": 18,
+            "cssclass": 2
+        }
+    },
+    {
+        "ControlName": "asp:scriptreference",
+        "NumberOfOccurrences": 13,
+        "Attributes":
+        {
+            "name": 13,
+            "assembly": 8,
+            "path": 8
+        }
+    }
+]
+```
+
+**Console Output**
+
+Controls Data:
+-- Name :asp:label, Type: Html, Count: 38
+  |-- Attribute:text, Count:36
+  |-- Attribute:cssclass, Count:4
+-- Name :asp:scriptreference, Type: Html, Count: 26
+  |-- Attribute:name, Count:26
+  |-- Attribute:assembly, Count:8
+  |-- Attribute:path, Count:8
+-- Name :asp:textbox, Type: Html, Count: 13
+  |-- Attribute:cssclass, Count:13
+  |-- Attribute:text, Count:7
+  |-- Attribute:readonly, Count:1
+  |-- Attribute:tooltip, Count:1
