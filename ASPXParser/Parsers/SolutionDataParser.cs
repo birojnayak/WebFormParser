@@ -20,12 +20,12 @@ namespace ASPXParser.Parsers
         public void GetData()
         {
             SolutionData.AllFiles = Directory.EnumerateFiles(DirectoryPath, "*.*", SearchOption.AllDirectories).ToList();
-            AggregateFiles(SolutionData.AllFiles, SolutionData.DataDictionary, SolutionData.AllWebFormsFiles as List<string>);
+            AggregateFiles(SolutionData.AllFiles, SolutionData.DataDictionary, SolutionData.AllWebFormsFiles);
         }
 
         private void AggregateFiles(IEnumerable<string> allFiles, 
             IDictionary<string, object> dataDictionary, 
-            List<string> allWebFormsFiles)
+            WebFormsFileDictionary allWebFormsFiles)
         {
             foreach(var filename in allFiles)
             {
@@ -33,37 +33,37 @@ namespace ASPXParser.Parsers
                     StringComparison.InvariantCultureIgnoreCase))
                 {
                     IncrementFileTypeCountInDict("WebFormsViewFiles", dataDictionary);
-                    allWebFormsFiles.Add(filename);
+                    allWebFormsFiles.Add(filename, FileExtension.WebFormsView);
                 }
                 else if (filename.EndsWith(FileExtension.WebFormsCodeBehind,
                     StringComparison.InvariantCultureIgnoreCase))
                 {
                     IncrementFileTypeCountInDict("WebFormsCodeBehindFiles", dataDictionary);
-                    allWebFormsFiles.Add(filename);
+                    allWebFormsFiles.Add(filename, FileExtension.WebFormsCodeBehind);
                 }
                 else if (filename.EndsWith(FileExtension.UserControl,
                     StringComparison.InvariantCultureIgnoreCase))
                 {
                     IncrementFileTypeCountInDict("UserControlFiles", dataDictionary);
-                    allWebFormsFiles.Add(filename);
+                    allWebFormsFiles.Add(filename, FileExtension.UserControl);
                 }
                 else if (filename.EndsWith(FileExtension.UserControlCodeBehind, 
                     StringComparison.InvariantCultureIgnoreCase))
                 {
                     IncrementFileTypeCountInDict("UserControlCodeBehindFiles", dataDictionary);
-                    allWebFormsFiles.Add(filename);
+                    allWebFormsFiles.Add(filename, FileExtension.UserControlCodeBehind);
                 }
                 else if (filename.EndsWith(FileExtension.MasterFile,
                     StringComparison.InvariantCultureIgnoreCase))
                 {
                     IncrementFileTypeCountInDict("MasterFiles", dataDictionary);
-                    allWebFormsFiles.Add(filename);
+                    allWebFormsFiles.Add(filename, FileExtension.MasterFile);
                 }
                 else if (filename.EndsWith(FileExtension.MasterFileCodeBehind,
                     StringComparison.InvariantCultureIgnoreCase))
                 {
                     IncrementFileTypeCountInDict("MasterFileCodeBehindFiles", dataDictionary);
-                    allWebFormsFiles.Add(filename);
+                    allWebFormsFiles.Add(filename, FileExtension.MasterFileCodeBehind);
                 }
                 else if (filename.EndsWith(FileExtension.Project,
                     StringComparison.InvariantCultureIgnoreCase))

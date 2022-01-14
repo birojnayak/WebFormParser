@@ -10,7 +10,7 @@ namespace ASPXParser.Models
 
         public IEnumerable<string> AllFiles { get; set; }
 
-        public IEnumerable<string> AllWebFormsFiles { get; set; }
+        public WebFormsFileDictionary AllWebFormsFiles { get; set; }
         
         public SolutionData()
         {
@@ -28,7 +28,7 @@ namespace ASPXParser.Models
                 { "TotalWebFormsFiles", 0 }
             };
             AllFiles = new List<string>();
-            AllWebFormsFiles = new List<string>();
+            AllWebFormsFiles = new WebFormsFileDictionary();
         }
         
         public string GetJsonResult()
