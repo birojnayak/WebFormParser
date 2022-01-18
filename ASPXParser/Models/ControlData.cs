@@ -13,11 +13,14 @@ namespace ASPXParser.Models
             Custom
         }
 
-        private IDictionary<string, int> attributes = new Dictionary<string, int>();
-        public string ControlName { get; }
+        public string ControlName { get; set; }
         private ControlType TypeOfControl { get; }
         public int NumberOfOccurrences { get; set; }
-        public IDictionary<string, int> Attributes => attributes;
+        public IDictionary<string, int> Attributes { get; set; } = new Dictionary<string, int>();
+
+        public ControlData()
+        {
+        }
 
         public ControlData(string name, ControlType typ, string[] attrs)
         {
@@ -37,25 +40,33 @@ namespace ASPXParser.Models
         {
             foreach (var attr in attrs)
             {
-                if (attributes.ContainsKey(attr))
+                if (Attributes.ContainsKey(attr))
                 {
-                    attributes[attr] += 1;
+                    Attributes[attr] += 1;
                 }
                 else
                 {
-                    attributes[attr] = 1;
+                    Attributes[attr] = 1;
                 }
             }
+        }
+
+        public IDictionary<string, int> SortAttributes()
+        {
+            Attributes = Attributes.OrderByDescending(kvp => kvp.Value)
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            return Attributes;
         }
 
         public override string ToString()
         {
             var sb = new StringBuilder();
             sb.AppendFormat("-- Name :{0}, Type: {1}, Count: {2}", ControlName, TypeOfControl.ToString(), NumberOfOccurrences).AppendLine();
-            attributes.OrderBy(v => v.Value);
-            foreach (var key in attributes.Keys)
+            Attributes.OrderBy(v => v.Value);
+            foreach (var key in Attributes.Keys)
             {
-                sb.AppendFormat("  |-- Attribute:{0}, Count:{1}", key, attributes[key]).AppendLine();
+                sb.AppendFormat("  |-- Attribute:{0}, Count:{1}", key, Attributes[key]).AppendLine();
             }
             return sb.ToString();
         }
