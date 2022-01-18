@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using ASPXParser.Models;
 using HtmlAgilityPack;
@@ -10,10 +9,10 @@ namespace ASPXParser.Parsers
 {
     public class ControlsDataParser
     {
-        private IEnumerable<string> WebFormsFiles { get; }
+        private WebFormsFileDictionary WebFormsFiles { get; }
         public ControlsData ControlsData { get; set; }
 
-        public ControlsDataParser(IEnumerable<string> webFormsFiles)
+        public ControlsDataParser(WebFormsFileDictionary webFormsFiles)
         {
             WebFormsFiles = webFormsFiles;
             ControlsData = new ControlsData();
@@ -27,50 +26,50 @@ namespace ASPXParser.Parsers
                 {
                     OptionFixNestedTags = true
                 };
-                var webFormsFilesList = WebFormsFiles
-                    .OrderByDescending(filename => filename)
-                    .ToList();
-                for (var i = 0; i < webFormsFilesList.Count; i++)
+
+                foreach(var (fileBaseName, fileCouple) in  WebFormsFiles.Lookup)
                 {
-                    if (webFormsFilesList[i].EndsWith(".cs")) // since we have processed already
-                    {
-                        continue;
-                    }
-
-                    // get all codebehind events for a file
+                    // Codebehind events for a file
                     List<string> codeBehindEventLines = null;
-                    if (webFormsFilesList[i - 1].EndsWith(".cs"))
+                    if (!string.IsNullOrEmpty(fileCouple.CodeBehindFile))
                     {
-                        codeBehindEventLines = GetCodeBehindEventsLines(webFormsFilesList[i - 1]);
+                        codeBehindEventLines = GetCodeBehindEventsLines(fileCouple.CodeBehindFile);
                     }
 
-                    htmlDoc.Load(webFormsFilesList[i]);
-                    var nodes = htmlDoc.DocumentNode.Descendants();
-                    foreach (var htmlNode in nodes)
+                    // Identify controls, control attributes, and codebehind events
+                    if (!string.IsNullOrEmpty(fileCouple.ViewFile))
                     {
-                        var attributes = new List<string>();
-                        var isServer = false;
-                        var id = "";
-                        foreach (var att in htmlNode.Attributes)
+                        htmlDoc.Load(fileCouple.ViewFile);
+                        var nodes = htmlDoc.DocumentNode.Descendants();
+                        foreach (var htmlNode in nodes)
                         {
-                            if (att.Name.Contains("runat", StringComparison.OrdinalIgnoreCase))
+                            var attributes = new List<string>();
+                            var isServer = false;
+                            var id = "";
+                            foreach (var att in htmlNode.Attributes)
                             {
-                                isServer = true;
-                                continue;
-                            }
-                            if (att.Name.Contains("id", StringComparison.OrdinalIgnoreCase))
-                            {
-                                id = att.Value;
-                                continue;
-                            }
-                            attributes.Add(att.Name);
+                                if (att.Name.Contains("runat", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    isServer = true;
+                                    continue;
+                                }
+                                if (att.Name.Contains("id", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    id = att.Value;
+                                    continue;
+                                }
+                                attributes.Add(att.Name);
 
+                            }
+                            if (isServer 
+                                && id.Length > 0 
+                                && codeBehindEventLines != null 
+                                && codeBehindEventLines.Count > 0)
+                            {
+                                GetCodeBehindEvents(codeBehindEventLines, id, attributes);
+                            }
+                            AddControl(htmlNode.Name, attributes.ToArray());
                         }
-                        if (isServer && id.Length > 0 && codeBehindEventLines != null && codeBehindEventLines.Count > 0)
-                        {
-                            GetCodeBehindEvents(codeBehindEventLines, id, attributes);
-                        }
-                        AddControl(htmlNode.Name, attributes.ToArray());
                     }
                 }
             }
@@ -86,9 +85,10 @@ namespace ASPXParser.Parsers
             {
                 throw new Exception("Path is too long" + ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                Console.WriteLine("Error while parsing controls data.");
+                throw;
             }
         }
 
@@ -105,7 +105,7 @@ namespace ASPXParser.Parsers
             }
             else
             {
-                return; // basic html we don't care 
+                return; // ignore basic html elements 
             }
 
             if (ControlsData.Controls.ContainsKey(controlName))
@@ -136,9 +136,10 @@ namespace ASPXParser.Parsers
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                Console.WriteLine($"Error while processing codebehind event lines in: {filePath}");
+                throw;
             }
 
             return serverEvents;
@@ -148,13 +149,18 @@ namespace ASPXParser.Parsers
         {
             foreach (var line in allLines)
             {
-                if (line.Contains(id + ".") && line.Contains(id + "_"))
+                if (line.Contains(id + ".") 
+                    && line.Contains(id + "_")
+                    && line.Contains("+="))
                 {
                     var fullLine = line.Trim();
                     var startIndex = fullLine.IndexOf(id + ".");
-                    var endIndex = fullLine.IndexOf("+=");
                     var position = startIndex + id.Length + 1;
-                    if (startIndex >= 0 && endIndex > startIndex && endIndex > position)
+                    var endIndex = fullLine.IndexOf("+=");
+                    if (IsValidIndex(fullLine, startIndex) 
+                        && IsValidIndex(fullLine, position)
+                        && IsValidIndex(fullLine, endIndex)
+                        && endIndex > position)
                     {
                         var attr = fullLine.Substring(position, endIndex - position);
                         if (!string.IsNullOrEmpty(attr))
@@ -162,8 +168,18 @@ namespace ASPXParser.Parsers
                             attributes.Add(attr.Trim());
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine($"Could not extract codebehind event from line: {fullLine}");
+                    }
                 }
             }
+        }
+
+        private bool IsValidIndex(string content, int index)
+        {
+            return index > -1
+                   && index < content.Length;
         }
     }
 }
