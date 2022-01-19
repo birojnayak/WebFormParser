@@ -48,10 +48,17 @@ namespace ASPXAggregator
                     var runId = Guid.NewGuid();
                     var totalsDataFile = currentDir + "\\" + "totals" + runId + ".json";
                     File.AppendAllText(totalsDataFile, controlDataAggregator.GetJsonResult());
+                    
+                    var countsOnlyDataFile = currentDir + "\\" + "counts" + runId + ".csv";
+                    File.AppendAllText(countsOnlyDataFile, controlDataAggregator.GetCountTotalsInCsvFormat());
 
                     Console.WriteLine("====================================Result in Json=================================");
                     Console.WriteLine("||     " + totalsDataFile + "   ||");
                     Console.WriteLine("====================================Result in Json=================================");
+
+                    Console.WriteLine("====================================Result in Csv=================================");
+                    Console.WriteLine("||     " + countsOnlyDataFile + "   ||");
+                    Console.WriteLine("====================================Result in Csv=================================");
                 }
                 catch
                 {

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using ASPXParser.Models;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 
 namespace ASPXAggregator
@@ -49,6 +50,27 @@ namespace ASPXAggregator
                 .OrderByDescending(controlData => controlData.NumberOfOccurrences);
 
             return JsonConvert.SerializeObject(sortedControlCountsEnumerable, Formatting.Indented);
+        }
+
+        public string GetCountTotalsInCsvFormat()
+        {
+            // Sort controls and control attributes by usage
+            var sortedControlCountsEnumerable = Totals
+                .Select(kvp =>
+                {
+                    var controlData = kvp.Value;
+                    controlData.SortAttributes();
+                    return controlData;
+                })
+                .OrderByDescending(controlData => controlData.NumberOfOccurrences);
+
+            var sb = new StringBuilder();
+            foreach (var controlCounts in sortedControlCountsEnumerable)
+            {
+                sb.AppendLine($"{controlCounts.ControlName},{controlCounts.NumberOfOccurrences}");
+            }
+
+            return sb.ToString();
         }
 
         public override string ToString()
